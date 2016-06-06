@@ -108,12 +108,14 @@ var Engine = (function(global) {
 
         row, col;
 
+      for (row = 0; row < 1; row++) {
         for (col = 0; col < 4; col++) {
           ctx.drawImage(Resources.get('images/water-block.png'), col * 101, row * 83);
         }
           ctx.drawImage(Resources.get('images/stone-block.png'), col * 101, row * 83);
-
+        }
       var levelOne = [
+              'images/stone-block.png',
               'images/stone-block.png',   // Row 1 of 3 of stone
               'images/stone-block.png',   // Row 2 of 3 of stone
               'images/stone-block.png',   // Row 3 of 3 of stone
@@ -121,11 +123,11 @@ var Engine = (function(global) {
               'images/grass-block.png'   // Row 2 of 2 of grass
           ],
 
-          numRows = 5,
+          numRows = 6,
           numCols = 5,
           row, col;
 
-      for (row = 0; row < numRows; row++) {
+      for (row = 1; row < numRows; row++) {
           for (col = 0; col < numCols; col++) {
 
               ctx.drawImage(Resources.get(levelOne[row]), col * 101, row * 83);
@@ -134,7 +136,7 @@ var Engine = (function(global) {
         }
 
     /* This defines the second level of the game. */
-      var levelTwo = [
+      /*var levelTwo = [
                 'images/stone-block.png',   // Row 1 of 3 of stone
                 'images/stone-block.png',   // Row 2 of 3 of stone
                 'images/stone-block.png',   // Row 3 of 3 of stone
@@ -165,7 +167,7 @@ var Engine = (function(global) {
             ctx.drawImage(Resources.get('images/water-block.png'), col * 101, row * 83);
           }
             ctx.drawImage(Resources.get('images/stone-block.png'), col * 101, row * 83);
-
+*/
         renderEntities();
     }
 

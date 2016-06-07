@@ -80,8 +80,10 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        //checkCollisions(now);
     }
+
+
 
     /* This is called by the update function and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
@@ -97,9 +99,8 @@ var Engine = (function(global) {
         player.update();
     }
 
-    function render() {
-
       /* This defines the first level. */
+var levelOne = function () {
 
       var levelOneTopRow = [
             'images/water-block.png', // Row of water
@@ -134,9 +135,13 @@ var Engine = (function(global) {
 
           }
         }
+      }
 
     /* This defines the second level of the game. */
-      /*var levelTwo = [
+
+var levelTwo = function () {
+
+      var levelTwoRows = [
                 'images/stone-block.png',   // Row 1 of 3 of stone
                 'images/stone-block.png',   // Row 2 of 3 of stone
                 'images/stone-block.png',   // Row 3 of 3 of stone
@@ -151,7 +156,7 @@ var Engine = (function(global) {
         for (row = 0; row < numRows; row++) {
             for (col = 0; col < numCols; col++) {
 
-                ctx.drawImage(Resources.get(levelTwo[row]), col * 101, row * 83);
+                ctx.drawImage(Resources.get(levelTwoRows[row]), col * 101, row * 83);
 
             }
           }
@@ -167,7 +172,18 @@ var Engine = (function(global) {
             ctx.drawImage(Resources.get('images/water-block.png'), col * 101, row * 83);
           }
             ctx.drawImage(Resources.get('images/stone-block.png'), col * 101, row * 83);
-*/
+      }
+
+      function render() {
+
+        if (player.level === "levelOne") {
+            levelOne();
+        }
+
+        else if (player.level === "levelTwo") {
+            levelTwo();
+          }
+
         renderEntities();
     }
 
@@ -184,6 +200,16 @@ var Engine = (function(global) {
         });
 
         player.render();
+    }
+
+    function textDrawer(text, x, y) {
+      ctx.font = "30px Lato";
+      ctx.textAlign = "center";
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 3;
+      ctx.strokeText(text, x, y);
+      ctx.fillStyle = "white";
+      ctx.fillStyle(text, x, y);
     }
 
     /* This function does nothing but it could have been a good place to
@@ -204,8 +230,6 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
-        'images/Gem Blue.png',
-        'images/selector.png'
     ]);
     Resources.onReady(init);
 

@@ -26,45 +26,53 @@ var Player = function(x, y) {
 var player = new Player(200, 400);
 
 
-/* This determines which level the player is on. */
+/* -----------------------------------------------------
+ * This determines which level the player is on.
+ */
 
 Player.prototype.levelCheck = function() {
 
-    if (this.level === "levelOne") {
+    if(this.level === "levelOne") {
       this.x = 200;
       this.y = 400;
     }
 
-    else if (this.level === "levelTwo") {
+    else if(this.level === "levelTwo") {
       this.x = 400;
       this.y = 400;
     }
 };
 
-/* This resets player position. */
+/* -------------------------------------------------------
+ * This resets player position.
+ */
 
 Player.prototype.reset = function() {
-  if (this.level === "levelOne") {
+  if(this.level === "levelOne") {
     this.x = 200;
     this.y = 400;
   }
 
-  else if (this.level === "levelTwo") {
+  else if(this.level === "levelTwo") {
     this.x = 400;
     this.y = 400;
   }
 
 };
 
-/* This checks for collision with enemy objects. */
+/* ---------------------------------------------------------------------
+ * This checks for collision with enemy objects.
+ */
 
-Player.prototype.collide = function () {
+Player.prototype.collide = function() {
     for(var i=0; i < allEnemies.length; i++) {
-        if (this.x < allEnemies[i].x + 25 && this.x + 25 > allEnemies[i].x && this.y < allEnemies[i].y + 30 && this.y + 30 > allEnemies[i].y) {
-            this.reset();
-            return true;
+        if (this.x < allEnemies[i].x + 25 && this.x + 25 > allEnemies[i].x &&
+            this.y < allEnemies[i].y + 30 && this.y + 30 > allEnemies[i].y) {
+              this.reset();
+              return true;
         }
     }
+
 };
 
 Player.prototype.update = function(dt) {
@@ -100,6 +108,8 @@ Player.prototype.update = function(dt) {
     alert("You lose. Try Again.");
     this.reset();
   }
+
+
 
 };
 
@@ -140,8 +150,8 @@ var Enemy = function(x, y, speed) {
 
 };
 
-function randomInt (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+Enemy.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 Enemy.prototype.reset = function() {
@@ -159,10 +169,6 @@ Enemy.prototype.update = function(dt) {
 
 };
 
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-
 var allEnemies = [];
 
 allEnemies[0] = new Enemy(100, 50, randomInt(50, 300));
@@ -173,10 +179,139 @@ allEnemies[2] = new Enemy(100, 225, randomInt(50, 300));
 -----------------------------ITEMS-----------------------------
 */
 
+/* ---------------------------------------------------------------------
+ * This creates the location parameters and height and width of the gems.
+ */
+
+var Gem = function(x, y) {
+
+    this.x = randomInt(0, 400);
+    this.y = randomInt(60, 220);
+    this.height = 40;
+    this.width = 40;
+};
+
+/* -------------------------------------------------------------------------
+ * This section creates the gems by calling the location, height, and width
+ * from Gem, and sets the initial display and collected so that the gems will
+ * appear on screen when the game is loaded.
+ */
+
+var Blue = function(sprite, x, y) {
+    Gem.call(this, x, y);
+    this.sprite = sprite;
+    this.display = true;
+    this.collected = false;
+};
+
+var Green = function(sprite, x, y) {
+    Gem.call(this, x, y);
+    this.sprite = sprite;
+    this.display = true;
+    this.collected = false;
+};
+
+var Orange = function(sprite, x, y) {
+    Gem.call(this, x, y);
+    this.sprite = sprite;
+    this.display = true;
+    this.collected = false;
+};
+
+/* ------------------------------------------------------------------------
+ * This section renders the gems that are to be collected.
+ */
+
+Blue.prototype.render = function() {
+    if(this.display === true) {
+       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
+};
+
+Green.prototype.render = function() {
+    if(this.display === true) {
+       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
+};
+
+Orange.prototype.render = function() {
+    if(this.display === true) {
+       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
+};
+
+
+/* ----------------------------------------------------------------------
+ * This section checks to see if the player has touched the gems; if so,
+ * the gem display and collected status are altered.
+ */
+
+Blue.prototype.checkStatus = function() {
+    if (player.x < blueGem.x + 25 && player.x + 25 > blueGem.x &&
+        player.y < blueGem.y + 30 && player.y + 30 > blueGem.y) {
+          this.collected = true;
+          this.display = false;
+    }
+};
+
+Green.prototype.checkStatus = function() {
+    if (player.x < greenGem.x + 25 && player.x + 25 > greenGem.x &&
+        player.y < greenGem.y + 30 && player.y + 30 > greenGem.y) {
+          this.collected = true;
+          this.display = false;
+    }
+};
+
+Orange.prototype.checkStatus = function() {
+    if (player.x < orangeGem.x + 25 && player.x + 25 > orangeGem.x &&
+        player.y < orangeGem.y + 30 && player.y + 30 > orangeGem.y) {
+          this.collected = true;
+          this.display = false;
+    }
+};
+
+/* ---------------------------------------------------------------------------
+ * This section makes the gems disappear from the gameboard once they have been
+ * collected by the player.
+ */
+
+Blue.prototype.update = function() {
+    this.checkStatus();
+
+};
+
+Green.prototype.update = function() {
+    this.checkStatus();
+
+};
+
+Orange.prototype.update = function() {
+    this.checkStatus();
+
+};
+
+/* ----------------------------------------------------------------
+ * Instantiates the gems.
+ */
+
+var gem = new Gem();
+var blueGem = new Blue('images/blue-gem.png');
+var greenGem = new Green('images/green-gem.png');
+var orangeGem = new Orange('images/orange-gem.png');
+
 
 /*
 -----------------------------CONTROLS-----------------------------
 */
+
+/* ----------------------------------------------------------------
+ * This function is used to create a random speed for enemies and
+ * a random location for the gems.
+ */
+
+function randomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {

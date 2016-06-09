@@ -80,12 +80,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        /*items.forEach(function(item) {
-            if (player.x < item.x + item.width && player.x + player.width > item.x &&
-                player.y < item.y + item.height && player.y + player.height > item.y) {
-                item.collected = true;
-            }
-        });*/
+
     }
 
     function checkCollision () {

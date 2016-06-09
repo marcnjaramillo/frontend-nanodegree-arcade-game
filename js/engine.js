@@ -80,10 +80,21 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        //checkCollisions(now);
+        /*items.forEach(function(item) {
+            if (player.x < item.x + item.width && player.x + player.width > item.x &&
+                player.y < item.y + item.height && player.y + player.height > item.y) {
+                item.collected = true;
+            }
+        });*/
     }
 
+    function checkCollision () {
 
+      if (player.x < blueGem.x + 25 && player.x + 25 > blueGem.x && player.y < blueGem.y + 30 && player.y + 30 > blueGem.y) {
+          this.collected = true;
+
+        }
+    }
 
     /* This is called by the update function and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
@@ -93,13 +104,23 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
+
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
+
         player.update();
+
+        blueGem.update();
+        greenGem.update();
+        orangeGem.update();
     }
 
-      /* This defines the first level. */
+
+/* --------------------------------------------------------------------------
+ * This defines the first level.
+ */
+
 var levelOne = function () {
 
       var levelOneTopRow = [
@@ -137,7 +158,9 @@ var levelOne = function () {
         }
       }
 
-    /* This defines the second level of the game. */
+/* -----------------------------------------------------------------------
+ * This defines the second level of the game.
+ */
 
 var levelTwo = function () {
 
@@ -200,6 +223,10 @@ var levelTwo = function () {
         });
 
         player.render();
+
+        blueGem.render();
+        greenGem.render();
+        orangeGem.render();
     }
 
     function textDrawer(text, x, y) {
@@ -230,6 +257,9 @@ var levelTwo = function () {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
+        'images/blue-gem.png',
+        'images/green-gem.png',
+        'images/orange-gem.png'
     ]);
     Resources.onReady(init);
 

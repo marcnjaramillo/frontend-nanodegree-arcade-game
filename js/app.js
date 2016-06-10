@@ -4,7 +4,9 @@ CONTENTS
 01. Player
 02. Enemies
 03. Gems
-04. Controls
+04. Selectors
+05. Gameplay
+06. Controls
 
 */
 

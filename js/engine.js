@@ -48,6 +48,9 @@ var Engine = (function(global) {
         update(dt);
         render();
 
+        if(gameBegin.gameFinished === true) {
+          alert("Congratulations! You won!!!");
+        }
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
@@ -109,6 +112,10 @@ var Engine = (function(global) {
         blueGem.update();
         greenGem.update();
         orangeGem.update();
+
+        blueSelector.update();
+        greenSelector.update();
+        orangeSelector.update();
     }
 
 
@@ -222,6 +229,10 @@ var levelTwo = function () {
         blueGem.render();
         greenGem.render();
         orangeGem.render();
+
+        blueSelector.render();
+        greenSelector.render();
+        orangeSelector.render();
     }
 
     function textDrawer(text, x, y) {
@@ -254,7 +265,8 @@ var levelTwo = function () {
         'images/char-boy.png',
         'images/blue-gem.png',
         'images/green-gem.png',
-        'images/orange-gem.png'
+        'images/orange-gem.png',
+        'images/Selector.png'
     ]);
     Resources.onReady(init);
 

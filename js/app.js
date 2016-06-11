@@ -60,6 +60,7 @@ Player.prototype.reset = function() {
     this.y = 400;
   }
 
+
 };
 
 /* ---------------------------------------------------------------------
@@ -86,18 +87,14 @@ Player.prototype.update = function(dt) {
     if(this.x < 0) {
         this.x = 0;
     }
-
     else {
       this.x = 400;
     }
   }
 
-//Is there a way to ensure the player can only activate the level reset
-//by touching the stone block in the top row by modifying this code?
-
   if(this.y < 0 || this.y > 400) {
     if(this.y < 0) {
-      player.level = "levelTwo";
+      this.level = "levelTwo";
       this.reset();
     }
     else {
@@ -105,13 +102,10 @@ Player.prototype.update = function(dt) {
     }
   }
 
-
   if(this.collide()) {
     alert("You lose. Try Again.");
     this.reset();
   }
-
-
 
 };
 
@@ -231,13 +225,15 @@ Blue.prototype.render = function() {
 };
 
 Green.prototype.render = function() {
-    if(blueGem.display === false && orangeGem.display === false) {
+    if(blueStar.display === true && orangeGem.display === false &&
+       player.level === "levelOne") {
        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 };
 
 Orange.prototype.render = function() {
-    if(blueGem.display === false && greenGem.display === false) {
+    if(blueStar.display === true && greenStar.display === true &&
+       player.level === "levelOne") {
        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 };
@@ -251,6 +247,7 @@ Orange.prototype.render = function() {
 Blue.prototype.checkStatus = function() {
     if (player.x < blueGem.x + 25 && player.x + 25 > blueGem.x &&
         player.y < blueGem.y + 30 && player.y + 30 > blueGem.y) {
+          player.gemStatus = 1;
           this.collected = true;
           this.display = false;
     }
@@ -259,6 +256,7 @@ Blue.prototype.checkStatus = function() {
 Green.prototype.checkStatus = function() {
     if (player.x < greenGem.x + 25 && player.x + 25 > greenGem.x &&
         player.y < greenGem.y + 30 && player.y + 30 > greenGem.y) {
+          player.gemStatus = 1;
           this.collected = true;
           this.display = false;
     }
@@ -267,6 +265,7 @@ Green.prototype.checkStatus = function() {
 Orange.prototype.checkStatus = function() {
     if (player.x < orangeGem.x + 25 && player.x + 25 > orangeGem.x &&
         player.y < orangeGem.y + 30 && player.y + 30 > orangeGem.y) {
+          player.gemStatus = 1;
           this.collected = true;
           this.display = false;
     }
@@ -373,13 +372,15 @@ BlueSelector.prototype.checkStatus = function() {
 };
 
 GreenSelector.prototype.checkStatus = function() {
-    if (greenGem.collected === true && player.level === "levelTwo") {
+    if (greenGem.collected === true && player.level === "levelTwo" &&
+        blueStar.display === true) {
           this.display = true;
     }
 };
 
 OrangeSelector.prototype.checkStatus = function() {
-    if (orangeGem.collected === true && player.level === "levelTwo") {
+    if (orangeGem.collected === true && player.level === "levelTwo" &&
+        blueStar.display === true && greenStar.display === true) {
           this.display = true;
     }
 };
@@ -406,9 +407,9 @@ OrangeSelector.prototype.update = function() {
  */
 
 var selector = new Selector();
-var blueSelector = new BlueSelector('images/Selector.png', 100, -40);
-var greenSelector = new GreenSelector('images/Selector.png', 200, -40);
-var orangeSelector = new OrangeSelector('images/Selector.png', 300, -40);
+var blueSelector = new BlueSelector('images/Selector.png', 100, 40);
+var greenSelector = new GreenSelector('images/Selector.png', 200, 40);
+var orangeSelector = new OrangeSelector('images/Selector.png', 300, 40);
 
 /*
 -----------------------------GAMEPLAY-----------------------------
@@ -420,8 +421,7 @@ var orangeSelector = new OrangeSelector('images/Selector.png', 300, -40);
 
 var Game = function(x, y) {
 
-    this.bluePlaced = false;
-    this.greenPlaced = false;
+
     this.gameFinished = false;
 };
 
@@ -430,27 +430,71 @@ var Game = function(x, y) {
  *
  */
 
-Game.prototype.checkStatus = function() {
+ var BluePlaced = function(sprite, x, y) {
+    this.sprite = sprite;
+    this.x = x;
+    this.y = y;
+    this.height = 90;
+    this.width = 90;
+    this.sprite = sprite;
+    this.checkStatus;
+    this.render;
+    this.update;
+    this.display = false;
+ }
+
+ var GreenPlaced = function(sprite, x, y) {
+   this.sprite = sprite;
+   this.x = x;
+   this.y = y;
+   this.height = 90;
+   this.width = 90;
+   this.sprite = sprite;
+   this.checkStatus;
+   this.render;
+   this.update;
+   this.display = false;
+ }
+
+ var OrangePlaced = function(sprite, x, y) {
+   this.sprite = sprite;
+   this.x = x;
+   this.y = y;
+   this.height = 90;
+   this.width = 90;
+   this.sprite = sprite;
+   this.checkStatus;
+   this.render;
+   this.update;
+   this.display = false;
+ }
+
+/* ----------------------------------------------------------------------
+ *
+ *
+ */
+
+BluePlaced.prototype.checkStatus = function() {
     if (blueGem.collected === true && player.level === "levelTwo" &&
         player.x < blueSelector.x + 25 && player.x + 25 > blueSelector.x &&
         player.y < blueSelector.y + 30 && player.y + 30 > blueSelector.y) {
-          this.bluePlaced = true;
+          this.display = true;
     }
 };
 
-Game.prototype.checkStatus = function() {
+GreenPlaced.prototype.checkStatus = function() {
     if (greenGem.collected === true && player.level === "levelTwo" &&
         player.x < greenSelector.x + 25 && player.x + 25 > greenSelector.x &&
         player.y < greenSelector.y + 30 && player.y + 30 > greenSelector.y) {
-          this.greenPlaced = true;
+          this.display = true;
     }
 };
 
-Game.prototype.checkStatus = function() {
+OrangePlaced.prototype.checkStatus = function() {
     if (orangeGem.collected === true && player.level === "levelTwo" &&
         player.x < orangeSelector.x + 25 && player.x + 25 > orangeSelector.x &&
         player.y < orangeSelector.y + 30 && player.y + 30 > orangeSelector.y) {
-          this.orangePlaced = true;
+          this.display = true;
     }
 };
 
@@ -459,9 +503,47 @@ Game.prototype.checkStatus = function() {
  *
  */
 
+ BluePlaced.prototype.render = function() {
+     if(this.display === true) {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+     }
+ };
 
+ GreenPlaced.prototype.render = function() {
+     if(this.display === true) {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+     }
+ };
+
+ OrangePlaced.prototype.render = function() {
+     if(this.display === true) {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+     }
+ };
+
+
+ /* ---------------------------------------------------------------------------
+  *
+  *
+  */
+
+  BluePlaced.prototype.update = function() {
+      this.checkStatus();
+  };
+
+  GreenPlaced.prototype.update = function() {
+      this.checkStatus();
+  };
+
+  OrangePlaced.prototype.update = function() {
+      this.checkStatus();
+  };
 
 var gameBegin = new Game();
+
+var blueStar = new BluePlaced('images/blue-star.png', 100, -40);
+var greenStar = new GreenPlaced('images/green-star.png', 200, -40);
+var orangeStar = new OrangePlaced('images/orange-star.png', 300, -40);
 
 /*
 -----------------------------CONTROLS-----------------------------

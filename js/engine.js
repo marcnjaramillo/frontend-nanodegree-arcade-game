@@ -116,6 +116,10 @@ var Engine = (function(global) {
         blueSelector.update();
         greenSelector.update();
         orangeSelector.update();
+
+        blueStar.update();
+        greenStar.update();
+        orangeStar.update();
     }
 
 
@@ -233,6 +237,10 @@ var levelTwo = function () {
         blueSelector.render();
         greenSelector.render();
         orangeSelector.render();
+
+        blueStar.render();
+        greenStar.render();
+        orangeStar.render();
     }
 
     function textDrawer(text, x, y) {
@@ -266,7 +274,10 @@ var levelTwo = function () {
         'images/blue-gem.png',
         'images/green-gem.png',
         'images/orange-gem.png',
-        'images/Selector.png'
+        'images/Selector.png',
+        'images/blue-star.png',
+        'images/green-star.png',
+        'images/orange-star.png'
     ]);
     Resources.onReady(init);
 

@@ -19,10 +19,12 @@ var Player = function(x, y) {
     this.sprite = 'images/char-boy.png';
     this.x = 200;
     this.y = 400;
-    this.height = 80;
-    this.width = 47;
+    this.height = 50;
+    this.width = 25;
     this.gemStatus = 0;
+    this.move;
     this.level = "levelOne";
+    this.levelCheck = "levelOne";
 };
 
 var player = new Player(200, 400);
@@ -50,15 +52,18 @@ Player.prototype.levelCheck = function() {
  */
 
 Player.prototype.reset = function() {
-  if(this.level === "levelOne") {
+
+    alert("Sorry. You Lose. Try Again.")
+    this.level = "levelOne";
     this.x = 200;
     this.y = 400;
-  }
 
-  else if(this.level === "levelTwo") {
+
+
+  /*else if(this.level === "levelTwo") {
     this.x = 400;
     this.y = 400;
-  }
+  }*/
 
 
 };
@@ -68,45 +73,38 @@ Player.prototype.reset = function() {
  */
 
 Player.prototype.collide = function() {
-    for(var i=0; i < allEnemies.length; i++) {
-        if (this.x < allEnemies[i].x + 25 && this.x + 25 > allEnemies[i].x &&
-            this.y < allEnemies[i].y + 30 && this.y + 30 > allEnemies[i].y) {
-              this.reset();
-              return true;
-        }
-    }
+  gameBegin.resetGame();
 
 };
 
 Player.prototype.update = function(dt) {
+    gameBegin.levelOne();
+    this.move(dt);
 
+};
+
+Player.prototype.move = function(dt) {
   this.x * (dt);
   this.y * (dt);
 
-  if(this.x < 0 || this.x > 400) {
-    if(this.x < 0) {
-        this.x = 0;
+  if(this.x < 0) {
+      this.x = 0;
     }
-    else {
+  if(this.x > 400) {
       this.x = 400;
     }
+
+  if(this.y < 0 && this.x < 350) {
+    player.reset();
   }
 
-  if(this.y < 0 || this.y > 400) {
-    if(this.y < 0) {
-      this.level = "levelTwo";
-      this.reset();
-    }
-    else {
-      this.y = 400;
-    }
+  if(this.y < 0 && this.x > 350) {
+    player.level = "levelTwo";
   }
 
-  if(this.collide()) {
-    alert("You lose. Try Again.");
-    this.reset();
+  if(this.y > 400) {
+    this.y = 400;
   }
-
 };
 
 Player.prototype.render = function() {
@@ -141,7 +139,7 @@ var Enemy = function(x, y, speed) {
     this.x = x;
     this.y = y;
     this.speed = speed;
-    this.height = 80;
+    this.height = 30;
     this.width = 30;
 
 };
@@ -168,8 +166,8 @@ Enemy.prototype.update = function(dt) {
 var allEnemies = [];
 
 allEnemies[0] = new Enemy(100, 50, randomInt(50, 300));
-allEnemies[1] = new Enemy(100, 130, randomInt(50, 300));
-allEnemies[2] = new Enemy(100, 225, randomInt(50, 300));
+allEnemies[1] = new Enemy(100, 135, randomInt(50, 300));
+allEnemies[2] = new Enemy(100, 220, randomInt(50, 300));
 
 /*
 -----------------------------GEMS-----------------------------
@@ -183,8 +181,8 @@ var Gem = function(x, y) {
 
     this.x = randomInt(0, 400);
     this.y = randomInt(60, 220);
-    this.height = 40;
-    this.width = 40;
+    this.height = 101;
+    this.width = 60;
 };
 
 /* -------------------------------------------------------------------------
@@ -193,26 +191,29 @@ var Gem = function(x, y) {
  * will appear on screen when the game is loaded.
  */
 
-var Blue = function(sprite, x, y) {
-    Gem.call(this, x, y);
-    this.sprite = sprite;
-    this.display = true;
-    this.collected = false;
-};
+ var Blue = function(sprite, x, y) {
+     Gem.call(this, x, y);
+     this.sprite = sprite;
+     this.display = true;
+     this.collected = false;
 
-var Green = function(sprite, x, y) {
-    Gem.call(this, x, y);
-    this.sprite = sprite;
-    this.display = false;
-    this.collected = false;
-};
+ };
 
-var Orange = function(sprite, x, y) {
-    Gem.call(this, x, y);
-    this.sprite = sprite;
-    this.display = false;
-    this.collected = false;
-};
+ var Green = function(sprite, x, y) {
+     Gem.call(this, x, y);
+     this.sprite = sprite;
+     this.display = false;
+     this.collected = false;
+
+ };
+
+ var Orange = function(sprite, x, y) {
+     Gem.call(this, x, y);
+     this.sprite = sprite;
+     this.display = false;
+     this.collected = false;
+
+ };
 
 /* ------------------------------------------------------------------------
  * This section renders the gems that are to be collected.
@@ -278,19 +279,23 @@ Orange.prototype.checkStatus = function() {
 
 Blue.prototype.update = function() {
     this.checkStatus();
+
 };
 
 Green.prototype.update = function() {
     this.checkStatus();
+
 };
 
 Orange.prototype.update = function() {
     this.checkStatus();
+
 };
 
 /* ----------------------------------------------------------------
  * Instantiates the gems.
  */
+
 
 var gem = new Gem();
 var blueGem = new Blue('images/blue-gem.png');
@@ -310,8 +315,8 @@ var Selector = function(x, y) {
 
     this.x = x;
     this.y = y;
-    this.height = 83;
-    this.width = 101;
+    this.height = 101;
+    this.width = 83;
 };
 
 /* -------------------------------------------------------------------------
@@ -320,23 +325,26 @@ var Selector = function(x, y) {
  * appear on screen when the corresponding gems are collected.
  */
 
-var BlueSelector = function(sprite, x, y) {
-    Selector.call(this, x, y);
-    this.sprite = sprite;
-    this.display = false;
-};
+ var BlueSelector = function(sprite, x, y) {
+     Selector.call(this, x, y);
+     this.sprite = sprite;
+     this.display = false;
 
-var GreenSelector = function(sprite, x, y) {
-    Selector.call(this, x, y);
-    this.sprite = sprite;
-    this.display = false;
-};
+ };
 
-var OrangeSelector = function(sprite, x, y) {
-    Selector.call(this, x, y);
-    this.sprite = sprite;
-    this.display = false;
-};
+ var GreenSelector = function(sprite, x, y) {
+     Selector.call(this, x, y);
+     this.sprite = sprite;
+     this.display = false;
+
+ };
+
+ var OrangeSelector = function(sprite, x, y) {
+     Selector.call(this, x, y);
+     this.sprite = sprite;
+     this.display = false;
+
+ };
 
 /* ------------------------------------------------------------------------
  * This section renders the selectors that identify where to place gems.
@@ -367,21 +375,34 @@ OrangeSelector.prototype.render = function() {
 
 BlueSelector.prototype.checkStatus = function() {
     if (blueGem.collected === true && player.level === "levelTwo") {
-          this.display = true;
+        this.display = true;
+    }
+
+    if (blueStar.display === true) {
+        this.display = false;
     }
 };
 
 GreenSelector.prototype.checkStatus = function() {
     if (greenGem.collected === true && player.level === "levelTwo" &&
         blueStar.display === true) {
-          this.display = true;
+        this.display = true;
+      }
+
+    if (greenStar.display === true) {
+        this.display = false;
     }
+
 };
 
 OrangeSelector.prototype.checkStatus = function() {
     if (orangeGem.collected === true && player.level === "levelTwo" &&
         blueStar.display === true && greenStar.display === true) {
-          this.display = true;
+        this.display = true;
+    }
+
+    if (orangeStar.display === true) {
+        this.display = false;
     }
 };
 
@@ -392,19 +413,24 @@ OrangeSelector.prototype.checkStatus = function() {
 
 BlueSelector.prototype.update = function() {
     this.checkStatus();
+
 };
 
 GreenSelector.prototype.update = function() {
     this.checkStatus();
+
 };
 
 OrangeSelector.prototype.update = function() {
     this.checkStatus();
+
 };
 
 /* ----------------------------------------------------------------
  * Instantiates the selectors.
  */
+
+
 
 var selector = new Selector();
 var blueSelector = new BlueSelector('images/Selector.png', 100, 40);
@@ -419,11 +445,24 @@ var orangeSelector = new OrangeSelector('images/Selector.png', 300, 40);
  * This creates the parameters for gameplay.
  */
 
-var Game = function(x, y) {
-
-
+var Game = function() {
+    this.levelOne;
+    this.levelTwo;
+    this.resetGame;
     this.gameFinished = false;
 };
+
+Game.prototype.resetGame = function () {
+  player.reset();
+  blueGem.display = true;
+  blueStar.display = false;
+}
+
+Game.prototype.levelOne = function() {
+    player.level = "levelOne";
+}
+
+
 
 /* ----------------------------------------------------------------------
  *
@@ -434,39 +473,42 @@ var Game = function(x, y) {
     this.sprite = sprite;
     this.x = x;
     this.y = y;
-    this.height = 90;
-    this.width = 90;
+    this.height = 101;
+    this.width = 60;
     this.sprite = sprite;
     this.checkStatus;
     this.render;
     this.update;
     this.display = false;
+
  }
 
  var GreenPlaced = function(sprite, x, y) {
    this.sprite = sprite;
    this.x = x;
    this.y = y;
-   this.height = 90;
-   this.width = 90;
+   this.height = 101;
+   this.width = 60;
    this.sprite = sprite;
    this.checkStatus;
    this.render;
    this.update;
    this.display = false;
+
  }
 
  var OrangePlaced = function(sprite, x, y) {
    this.sprite = sprite;
    this.x = x;
    this.y = y;
-   this.height = 90;
-   this.width = 90;
+   this.height = 101;
+   this.width = 60;
    this.sprite = sprite;
    this.checkStatus;
    this.render;
    this.update;
    this.display = false;
+
  }
 
 /* ----------------------------------------------------------------------
@@ -479,6 +521,7 @@ BluePlaced.prototype.checkStatus = function() {
         player.x < blueSelector.x + 25 && player.x + 25 > blueSelector.x &&
         player.y < blueSelector.y + 30 && player.y + 30 > blueSelector.y) {
           this.display = true;
+          blueSelector.display = false;
     }
 };
 
@@ -487,6 +530,7 @@ GreenPlaced.prototype.checkStatus = function() {
         player.x < greenSelector.x + 25 && player.x + 25 > greenSelector.x &&
         player.y < greenSelector.y + 30 && player.y + 30 > greenSelector.y) {
           this.display = true;
+          greenSelector.display = false;
     }
 };
 
@@ -495,6 +539,7 @@ OrangePlaced.prototype.checkStatus = function() {
         player.x < orangeSelector.x + 25 && player.x + 25 > orangeSelector.x &&
         player.y < orangeSelector.y + 30 && player.y + 30 > orangeSelector.y) {
           this.display = true;
+          orangeSelector.display = false;
     }
 };
 
@@ -529,21 +574,26 @@ OrangePlaced.prototype.checkStatus = function() {
 
   BluePlaced.prototype.update = function() {
       this.checkStatus();
+
   };
 
   GreenPlaced.prototype.update = function() {
       this.checkStatus();
+
   };
 
   OrangePlaced.prototype.update = function() {
       this.checkStatus();
+
   };
+
+
 
 var gameBegin = new Game();
 
-var blueStar = new BluePlaced('images/blue-star.png', 100, -40);
-var greenStar = new GreenPlaced('images/green-star.png', 200, -40);
-var orangeStar = new OrangePlaced('images/orange-star.png', 300, -40);
+var blueStar = new BluePlaced('images/blue-star.png', 122.5, 30);
+var greenStar = new GreenPlaced('images/green-star.png', 222.5, 30);
+var orangeStar = new OrangePlaced('images/orange-star.png', 322.5, 30);
 
 /*
 -----------------------------CONTROLS-----------------------------

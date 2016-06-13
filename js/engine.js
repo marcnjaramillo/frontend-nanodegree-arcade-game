@@ -83,15 +83,24 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-
+        checkCollision();
     }
 
     function checkCollision () {
 
-      if (player.x < blueGem.x + 25 && player.x + 25 > blueGem.x && player.y < blueGem.y + 30 && player.y + 30 > blueGem.y) {
-          this.collected = true;
+        allEnemies.forEach(function(enemy) {
+          if (player.x < enemy.x + enemy.width && player.x + player.width > enemy.x &&
+              player.y < enemy.y + enemy.height && player.y + player.height > enemy.y) {
+                player.collide();
+              }
+        });
 
+        if(player.level === "levelOne") {
+            if(player.x < 350 && player.y < 0) {
+              gameBegin.resetGame();
+            }
         }
+
     }
 
     /* This is called by the update function and loops through all of the
@@ -142,6 +151,7 @@ var levelOne = function () {
         }
           ctx.drawImage(Resources.get('images/stone-block.png'), col * 101, row * 83);
         }
+
       var levelOne = [
               'images/stone-block.png',
               'images/stone-block.png',   // Row 1 of 3 of stone
@@ -159,7 +169,6 @@ var levelOne = function () {
           for (col = 0; col < numCols; col++) {
 
               ctx.drawImage(Resources.get(levelOne[row]), col * 101, row * 83);
-
           }
         }
       }
@@ -186,7 +195,6 @@ var levelTwo = function () {
             for (col = 0; col < numCols; col++) {
 
                 ctx.drawImage(Resources.get(levelTwoRows[row]), col * 101, row * 83);
-
             }
           }
 
@@ -204,16 +212,13 @@ var levelTwo = function () {
       }
 
       function render() {
-
-        if (player.level === "levelOne") {
-            levelOne();
-        }
-
-        else if (player.level === "levelTwo") {
-            levelTwo();
-          }
-
-        renderEntities();
+          if (player.level === "levelOne") {
+              levelOne();
+            }
+          if (player.level === "levelTwo") {
+              levelTwo();
+            }
+          renderEntities();
     }
 
     /* This function is called by the render function and is called on each game
@@ -258,7 +263,7 @@ var levelTwo = function () {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+          //noop
     }
 
     /* Go ahead and load all of the images we know we're going to need to

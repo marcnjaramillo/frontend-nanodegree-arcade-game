@@ -1,12 +1,16 @@
-/*
+/* This is a very basic game. I played around for the past two weeks with other
+ * features like adding a level and collectible items; however, I could not get
+ * the game to function the way I wanted to. For now, I pared it down to the
+ * most basic requirements. Perhaps in the future I can come back to this and
+ * make it more interesting once I learn more advanced techniques.
+ */
 
+
+/*
 CONTENTS
 01. Player
 02. Enemies
-03. Gems
-04. Selectors
-05. Gameplay
-06. Controls
+03. Controls
 
 */
 
@@ -118,8 +122,7 @@ allEnemies[2] = new Enemy(100, 220, randomInt(50, 300));
 */
 
 /* ----------------------------------------------------------------
- * This function is used to create a random speed for enemies and
- * a random location for the gems.
+ * This function is used to create a random speed for enemies.
  */
 
 Player.prototype.handleInput = function(direction) {

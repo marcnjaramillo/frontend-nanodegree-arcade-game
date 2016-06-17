@@ -21,112 +21,58 @@ var Player = function(x, y) {
     this.y = 400;
     this.height = 50;
     this.width = 25;
-    this.gemStatus = 0;
-    this.move;
-    this.level = "levelOne";
-    this.levelCheck = "levelOne";
 };
 
 var player = new Player(200, 400);
 
-
-/* -----------------------------------------------------
- * This determines which level the player is on.
- */
-
-Player.prototype.levelCheck = function() {
-
-    if(this.level === "levelOne") {
-      this.x = 200;
-      this.y = 400;
-    }
-
-    else if(this.level === "levelTwo") {
-      this.x = 400;
-      this.y = 400;
-    }
-};
-
 /* -------------------------------------------------------
- * This resets player position.
+ * This resets player if the game detects collision with enemy bugs or water.
  */
 
 Player.prototype.reset = function() {
 
-    alert("Sorry. You Lose. Try Again.")
-    this.level = "levelOne";
     this.x = 200;
     this.y = 400;
-
-
-
-  /*else if(this.level === "levelTwo") {
-    this.x = 400;
-    this.y = 400;
-  }*/
-
-
 };
 
 /* ---------------------------------------------------------------------
- * This checks for collision with enemy objects.
+ * The function for checking collisions is located in engine.js.
  */
 
 Player.prototype.collide = function() {
-  gameBegin.resetGame();
-
+    alert("Sorry. You Lose. Try Again.")
+    this.reset();
 };
 
 Player.prototype.update = function(dt) {
-    gameBegin.levelOne();
     this.move(dt);
-
 };
 
 Player.prototype.move = function(dt) {
-  this.x * (dt);
-  this.y * (dt);
 
-  if(this.x < 0) {
+    this.x * (dt);
+    this.y * (dt);
+
+    if(this.x < 0) {
       this.x = 0;
     }
-  if(this.x > 400) {
+
+    if(this.x > 400) {
       this.x = 400;
     }
 
-  if(this.y < 0 && this.x < 350) {
-    player.reset();
-  }
+    if(this.y < 10) {
+      alert("Congratulations! You won!!")
+      this.reset();
+    }
 
-  if(this.y < 0 && this.x > 350) {
-    player.level = "levelTwo";
-  }
-
-  if(this.y > 400) {
-    this.y = 400;
-  }
+    if(this.y > 400) {
+      this.y = 400;
+    }
 };
 
 Player.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y)
-};
-
-Player.prototype.handleInput = function(direction) {
-  if(direction === 'left') {
-    this.x = this.x - 20;
-  }
-
-  if(direction === 'right') {
-    this.x = this.x + 20;
-
-  }
-  if(direction === 'up') {
-      this.y = this.y - 20;
-
-    }
-  if(direction === 'down') {
-      this.y = this.y + 20;
-    }
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y)
 };
 
 /*
@@ -141,7 +87,6 @@ var Enemy = function(x, y, speed) {
     this.speed = speed;
     this.height = 30;
     this.width = 30;
-
 };
 
 Enemy.prototype.render = function() {
@@ -160,7 +105,6 @@ Enemy.prototype.update = function(dt) {
 
     this.x += this.speed * dt;
     this.reset();
-
 };
 
 var allEnemies = [];
@@ -170,432 +114,6 @@ allEnemies[1] = new Enemy(100, 135, randomInt(50, 300));
 allEnemies[2] = new Enemy(100, 220, randomInt(50, 300));
 
 /*
------------------------------GEMS-----------------------------
-*/
-
-/* ---------------------------------------------------------------------
- * This creates the location parameters and height and width of the gems.
- */
-
-var Gem = function(x, y) {
-
-    this.x = randomInt(0, 400);
-    this.y = randomInt(60, 220);
-    this.height = 101;
-    this.width = 60;
-};
-
-/* -------------------------------------------------------------------------
- * This section creates the gems by calling the location, height, and width
- * from Gem, and sets the initial display and collected status so that the gems
- * will appear on screen when the game is loaded.
- */
-
- var Blue = function(sprite, x, y) {
-     Gem.call(this, x, y);
-     this.sprite = sprite;
-     this.display = true;
-     this.collected = false;
-
- };
-
- var Green = function(sprite, x, y) {
-     Gem.call(this, x, y);
-     this.sprite = sprite;
-     this.display = false;
-     this.collected = false;
-
- };
-
- var Orange = function(sprite, x, y) {
-     Gem.call(this, x, y);
-     this.sprite = sprite;
-     this.display = false;
-     this.collected = false;
-
- };
-
-/* ------------------------------------------------------------------------
- * This section renders the gems that are to be collected.
- */
-
-Blue.prototype.render = function() {
-    if(this.display === true) {
-       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    }
-};
-
-Green.prototype.render = function() {
-    if(blueStar.display === true && orangeGem.display === false &&
-       player.level === "levelOne") {
-       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    }
-};
-
-Orange.prototype.render = function() {
-    if(blueStar.display === true && greenStar.display === true &&
-       player.level === "levelOne") {
-       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    }
-};
-
-
-/* ----------------------------------------------------------------------
- * This section checks to see if the player has touched the gems; if so,
- * the gem display and collected status are altered.
- */
-
-Blue.prototype.checkStatus = function() {
-    if (player.x < blueGem.x + 25 && player.x + 25 > blueGem.x &&
-        player.y < blueGem.y + 30 && player.y + 30 > blueGem.y) {
-          player.gemStatus = 1;
-          this.collected = true;
-          this.display = false;
-    }
-};
-
-Green.prototype.checkStatus = function() {
-    if (player.x < greenGem.x + 25 && player.x + 25 > greenGem.x &&
-        player.y < greenGem.y + 30 && player.y + 30 > greenGem.y) {
-          player.gemStatus = 1;
-          this.collected = true;
-          this.display = false;
-    }
-};
-
-Orange.prototype.checkStatus = function() {
-    if (player.x < orangeGem.x + 25 && player.x + 25 > orangeGem.x &&
-        player.y < orangeGem.y + 30 && player.y + 30 > orangeGem.y) {
-          player.gemStatus = 1;
-          this.collected = true;
-          this.display = false;
-    }
-};
-
-/* ---------------------------------------------------------------------------
- * This section makes the gems disappear from the gameboard once they have been
- * collected by the player.
- */
-
-Blue.prototype.update = function() {
-    this.checkStatus();
-
-};
-
-Green.prototype.update = function() {
-    this.checkStatus();
-
-};
-
-Orange.prototype.update = function() {
-    this.checkStatus();
-
-};
-
-/* ----------------------------------------------------------------
- * Instantiates the gems.
- */
-
-
-var gem = new Gem();
-var blueGem = new Blue('images/blue-gem.png');
-var greenGem = new Green('images/green-gem.png');
-var orangeGem = new Orange('images/orange-gem.png');
-
-
-/*
------------------------------SELECTORS-----------------------------
-*/
-
-/* ---------------------------------------------------------------------
- * This creates the location parameters and height and width of the selectors.
- */
-
-var Selector = function(x, y) {
-
-    this.x = x;
-    this.y = y;
-    this.height = 101;
-    this.width = 83;
-};
-
-/* -------------------------------------------------------------------------
- * This section creates the selectors by calling the location, height, and width
- * from Selector, and sets the initial display so that selectors will
- * appear on screen when the corresponding gems are collected.
- */
-
- var BlueSelector = function(sprite, x, y) {
-     Selector.call(this, x, y);
-     this.sprite = sprite;
-     this.display = false;
-
- };
-
- var GreenSelector = function(sprite, x, y) {
-     Selector.call(this, x, y);
-     this.sprite = sprite;
-     this.display = false;
-
- };
-
- var OrangeSelector = function(sprite, x, y) {
-     Selector.call(this, x, y);
-     this.sprite = sprite;
-     this.display = false;
-
- };
-
-/* ------------------------------------------------------------------------
- * This section renders the selectors that identify where to place gems.
- */
-
-BlueSelector.prototype.render = function() {
-    if(this.display === true) {
-       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    }
-};
-
-GreenSelector.prototype.render = function() {
-    if(this.display === true) {
-       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    }
-};
-
-OrangeSelector.prototype.render = function() {
-    if(this.display === true) {
-       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    }
-};
-
-/* ----------------------------------------------------------------------
- * This section checks to see if the player has touched the gems; if so,
- * the corresponding selector display is altered.
- */
-
-BlueSelector.prototype.checkStatus = function() {
-    if (blueGem.collected === true && player.level === "levelTwo") {
-        this.display = true;
-    }
-
-    if (blueStar.display === true) {
-        this.display = false;
-    }
-};
-
-GreenSelector.prototype.checkStatus = function() {
-    if (greenGem.collected === true && player.level === "levelTwo" &&
-        blueStar.display === true) {
-        this.display = true;
-      }
-
-    if (greenStar.display === true) {
-        this.display = false;
-    }
-
-};
-
-OrangeSelector.prototype.checkStatus = function() {
-    if (orangeGem.collected === true && player.level === "levelTwo" &&
-        blueStar.display === true && greenStar.display === true) {
-        this.display = true;
-    }
-
-    if (orangeStar.display === true) {
-        this.display = false;
-    }
-};
-
-/* ---------------------------------------------------------------------------
- * This section makes the selectors appear on the gameboard once gems have been
- * collected by the player.
- */
-
-BlueSelector.prototype.update = function() {
-    this.checkStatus();
-
-};
-
-GreenSelector.prototype.update = function() {
-    this.checkStatus();
-
-};
-
-OrangeSelector.prototype.update = function() {
-    this.checkStatus();
-
-};
-
-/* ----------------------------------------------------------------
- * Instantiates the selectors.
- */
-
-
-
-var selector = new Selector();
-var blueSelector = new BlueSelector('images/Selector.png', 100, 40);
-var greenSelector = new GreenSelector('images/Selector.png', 200, 40);
-var orangeSelector = new OrangeSelector('images/Selector.png', 300, 40);
-
-/*
------------------------------GAMEPLAY-----------------------------
-*/
-
-/* ---------------------------------------------------------------------
- * This creates the parameters for gameplay.
- */
-
-var Game = function() {
-    this.levelOne;
-    this.levelTwo;
-    this.resetGame;
-    this.gameFinished = false;
-};
-
-Game.prototype.resetGame = function () {
-  player.reset();
-  blueGem.display = true;
-  blueStar.display = false;
-}
-
-Game.prototype.levelOne = function() {
-    player.level = "levelOne";
-}
-
-
-
-/* ----------------------------------------------------------------------
- *
- *
- */
-
- var BluePlaced = function(sprite, x, y) {
-    this.sprite = sprite;
-    this.x = x;
-    this.y = y;
-    this.height = 101;
-    this.width = 60;
-    this.sprite = sprite;
-    this.checkStatus;
-    this.render;
-    this.update;
-    this.display = false;
-
- }
-
- var GreenPlaced = function(sprite, x, y) {
-   this.sprite = sprite;
-   this.x = x;
-   this.y = y;
-   this.height = 101;
-   this.width = 60;
-   this.sprite = sprite;
-   this.checkStatus;
-   this.render;
-   this.update;
-   this.display = false;
-
- }
-
- var OrangePlaced = function(sprite, x, y) {
-   this.sprite = sprite;
-   this.x = x;
-   this.y = y;
-   this.height = 101;
-   this.width = 60;
-   this.sprite = sprite;
-   this.checkStatus;
-   this.render;
-   this.update;
-   this.display = false;
-
- }
-
-/* ----------------------------------------------------------------------
- *
- *
- */
-
-BluePlaced.prototype.checkStatus = function() {
-    if (blueGem.collected === true && player.level === "levelTwo" &&
-        player.x < blueSelector.x + 25 && player.x + 25 > blueSelector.x &&
-        player.y < blueSelector.y + 30 && player.y + 30 > blueSelector.y) {
-          this.display = true;
-          blueSelector.display = false;
-    }
-};
-
-GreenPlaced.prototype.checkStatus = function() {
-    if (greenGem.collected === true && player.level === "levelTwo" &&
-        player.x < greenSelector.x + 25 && player.x + 25 > greenSelector.x &&
-        player.y < greenSelector.y + 30 && player.y + 30 > greenSelector.y) {
-          this.display = true;
-          greenSelector.display = false;
-    }
-};
-
-OrangePlaced.prototype.checkStatus = function() {
-    if (orangeGem.collected === true && player.level === "levelTwo" &&
-        player.x < orangeSelector.x + 25 && player.x + 25 > orangeSelector.x &&
-        player.y < orangeSelector.y + 30 && player.y + 30 > orangeSelector.y) {
-          this.display = true;
-          orangeSelector.display = false;
-    }
-};
-
-/* ---------------------------------------------------------------------------
- *
- *
- */
-
- BluePlaced.prototype.render = function() {
-     if(this.display === true) {
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-     }
- };
-
- GreenPlaced.prototype.render = function() {
-     if(this.display === true) {
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-     }
- };
-
- OrangePlaced.prototype.render = function() {
-     if(this.display === true) {
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-     }
- };
-
-
- /* ---------------------------------------------------------------------------
-  *
-  *
-  */
-
-  BluePlaced.prototype.update = function() {
-      this.checkStatus();
-
-  };
-
-  GreenPlaced.prototype.update = function() {
-      this.checkStatus();
-
-  };
-
-  OrangePlaced.prototype.update = function() {
-      this.checkStatus();
-
-  };
-
-
-
-var gameBegin = new Game();
-
-var blueStar = new BluePlaced('images/blue-star.png', 122.5, 30);
-var greenStar = new GreenPlaced('images/green-star.png', 222.5, 30);
-var orangeStar = new OrangePlaced('images/orange-star.png', 322.5, 30);
-
-/*
 -----------------------------CONTROLS-----------------------------
 */
 
@@ -603,6 +121,25 @@ var orangeStar = new OrangePlaced('images/orange-star.png', 322.5, 30);
  * This function is used to create a random speed for enemies and
  * a random location for the gems.
  */
+
+Player.prototype.handleInput = function(direction) {
+
+     if(direction === 'left') {
+       this.x = this.x - 20;
+     }
+
+     if(direction === 'right') {
+       this.x = this.x + 20;
+     }
+
+     if(direction === 'up') {
+       this.y = this.y - 20;
+     }
+
+     if(direction === 'down') {
+       this.y = this.y + 20;
+     }
+ };
 
 function randomInt (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

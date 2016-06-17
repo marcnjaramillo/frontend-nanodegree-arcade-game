@@ -1,6 +1,11 @@
-frontend-nanodegree-arcade-game
-===============================
+#Classic Arcade Game - Frogger Clone
+This clone of the classic game _Frogger_  was created using HTML5 canvas.
+Gameplay only requires very simple inputs - up, down, left, and right.
 
-Students should use this [rubric](https://review.udacity.com/#!/projects/2696458597/rubric) for self-checking their submission.
+##Object of the Game
+Just like in _Frogger_, the player must get the character from one side of the
+board to the other without running into objects - in this case, adorable
+ladybugs.
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+###Controls
+This is a very simple game. All a user needs to use is the arrow keys.
